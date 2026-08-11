@@ -1011,7 +1011,7 @@
         const total = 20;
         const correctIndex = Math.floor(Math.random() * total);
         let html = `
-        <div class="stage-title">🎁 TRIAL IV — FIND THE REAL BOX</div>
+        <div class="stage-title">🎁 TRIAL V — FIND THE REAL BOX</div>
         <p>Only one of these boxes is real.</p>
         <div class="fakegrid" id="fakegrid">`;
         for (let i = 0; i < total; i++) {
@@ -1022,7 +1022,7 @@
       }
       function fakeClick(i, correctIndex) {
         if (i === correctIndex) {
-          goTo(5);
+          goTo(6);
         } else {
           const btn = document.querySelector(`.fakebtn[data-i="${i}"]`);
           const msg =
@@ -1047,7 +1047,7 @@
       function stageFillBox() {
         fillLevel = 0;
         render(`
-        <div class="stage-title">📦 TRIAL V — FILL THE BOX</div>
+        <div class="stage-title">📦 TRIAL IV — FILL THE BOX</div>
         <p class="center dim">Tap fast. It leaks.</p>
         <div class="fillbox-outline"><div class="fillbox-liquid" id="fillbox-liquid" style="height:0%"></div></div>
         <button onclick="mashClick()">MASH!</button>
@@ -1065,7 +1065,7 @@
         if (el) el.style.height = fillLevel + "%";
         if (fillLevel >= 100) {
           clearInterval(fillInterval);
-          goTo(6);
+          goTo(5);
         }
       }
 
@@ -1161,10 +1161,10 @@
             stageRedLightGreenLight();
             break;
           case 4:
-            stageFakeButtons();
+            stageFillBox();
             break;
           case 5:
-            stageFillBox();
+            stageFakeButtons();
             break;
           case 6:
             stageBossReveal();
