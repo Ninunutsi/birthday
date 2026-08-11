@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"
+    />
+    <title>BIRTHDAY QUEST</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-deep: #0b0e1a;
+        --bezel: #1b1440;
+        --bezel-dark: #120d2e;
+        --screen-bg: #05070f;
+        --grid-line: #1c2340;
+        --magenta: #ff3ea5;
+        --cyan: #38f2e5;
+        --gold: #ffd23f;
+        --hp-red: #ff3b3b;
+        --green: #3dff88;
+        --text-main: #eaf0ff;
+        --text-dim: #7c85b3;
+      }
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(
+            circle at 50% -10%,
+            rgba(56, 242, 229, 0.08),
+            transparent 60%
+          ),
+          var(--bg-deep);
+        color: var(--text-main);
+        font-family: "VT323", monospace;
+        overflow-x: hidden;
+      }
+      body {
+        background-image:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 28px 28px;
+        background-position: center;
+      }
+      .pixel {
+        font-family: "Press Start 2P", monospace;
+      }
+
+      #page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 14px 40px;
+      }
+
+      .console {
+        width: 100%;
+        max-width: 480px;
+        background: linear-gradient(180deg, var(--bezel), var(--bezel-dark));
+        border-radius: 22px;
+        padding: 18px 16px 22px;
+        box-shadow:
+          0 0 0 3px #0a0620,
+          0 18px 40px rgba(0, 0, 0, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        position: relative;
+      }
+      .console::before {
+        content: "BIRTHDAY QUEST // HANDHELD ED.";
+        display: block;
+        font-family: "Press Start 2P", monospace;
+        font-size: 8px;
+        letter-spacing: 1px;
+        color: #7a72c4;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .screen {
+        background: radial-gradient(
+          circle at 50% 0%,
+          #0c1024,
+          var(--screen-bg)
+        );
+        border-radius: 10px;
+        border: 2px solid #2a2260;
+        box-shadow:
+          inset 0 0 30px rgba(0, 0, 0, 0.7),
+          inset 0 0 0 2px #000;
+        overflow: hidden;
+        position: relative;
+        min-height: 420px;
+        display: flex;
+        flex-direction: column;
+      }
+      .screen::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.025) 0px,
+          rgba(255, 255, 255, 0.025) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+      }
+
+      #hud {
+        padding: 14px 16px 10px;
+        border-bottom: 1px solid #1c2350;
+        flex-shrink: 0;
+      }
+      .hud-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+        font-family: "Press Start 2P", monospace;
+      }
+      .hud-label span.name {
+        color: var(--gold);
+      }
+      .hud-bar {
+        height: 14px;
+        background: #1a1e35;
+        border: 2px solid #2a3155;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .hud-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--hp-red), #ff8a3b);
+        transition: width 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+        box-shadow: 0 0 12px rgba(255, 59, 59, 0.6);
+      }
+      .hud-fill.low {
+        background: linear-gradient(90deg, #ff3b3b, #ffd23f);
+        animation: flicker 0.6s infinite alternate;
+      }
+      @keyframes flicker {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0.75;
+        }
+      }
+
+      #stage-root {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 18px 18px;
+        position: relative;
+        z-index: 1;
+      }
+      .stage-title {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: var(--cyan);
+        font-family: "Press Start 2P", monospace;
+        margin-bottom: 14px;
+      }
+      h1.title {
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--cyan);
+        text-shadow: 0 0 12px rgba(56, 242, 229, 0.55);
+        margin: 0 0 14px;
+      }
+      p {
+        font-size: 19px;
+        line-height: 1.5;
+        color: var(--text-main);
+        margin: 0 0 14px;
+      }
+      .dim {
+        color: var(--text-dim);
+        font-size: 16px;
+      }
+      .center {
+        text-align: center;
+      }
+      .grow {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      input[type="text"] {
+        width: 70%;
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        padding: 10px 12px;
+        background: #0a0d1c;
+        border: 2px solid #2a3155;
+        color: var(--text-main);
+        border-radius: 3px;
+        outline: none;
+        position: absolute;
+        transition: transform 0.08s ease;
+      }
+      input[type="text"]:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 0 3px rgba(56, 242, 229, 0.15);
+      }
+
+      button {
+        font-family: "Press Start 2P", monospace;
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: #0a0d1c;
+        background: linear-gradient(180deg, var(--gold), #e8ab00);
+        border: none;
+        padding: 14px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        box-shadow: 0 4px 0 #a67900;
+        transition:
+          transform 0.08s ease,
+          box-shadow 0.08s ease;
+        margin-top: auto;
+      }
+      button:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 #a67900;
+      }
+      button.secondary {
+        background: linear-gradient(180deg, #2a3155, #1a2040);
+        color: var(--cyan);
+        box-shadow: 0 4px 0 #10142a;
+        margin-top: 8px;
+      }
+      button.secondary:active {
+        box-shadow: 0 1px 0 #10142a;
+      }
+
+      .error-msg {
+        color: var(--magenta);
+        font-size: 16px;
+        min-height: 20px;
+        margin: 4px 0;
+      }
+      .emoji-big {
+        font-size: 56px;
+        text-align: center;
+        margin: 6px 0;
+        line-height: 1;
+      }
+      .flash-shake {
+        animation: shake 0.35s;
+      }
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translateX(-2px);
+        }
+        20%,
+        80% {
+          transform: translateX(4px);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translateX(-8px);
+        }
+        40%,
+        60% {
+          transform: translateX(8px);
+        }
+      }
+      .final-glow {
+        text-shadow:
+          0 0 20px rgba(255, 62, 165, 0.8),
+          0 0 40px rgba(255, 62, 165, 0.4);
+      }
+
+      .fakegrid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+        margin-bottom: 8px;
+      }
+      .fakebtn {
+        font-family: "Press Start 2P", monospace;
+        font-size: 8px;
+        padding: 12px 3px;
+        background: #0a0d1c;
+        border: 2px solid #2a3155;
+        color: var(--text-main);
+        border-radius: 6px;
+        cursor: pointer;
+        box-shadow: none;
+        width: 100%;
+        text-align: center;
+        line-height: 1.3;
+        margin-top: 0;
+      }
+      .fakebtn:active {
+        transform: none;
+      }
+
+      .fillbox-outline {
+        width: 120px;
+        height: 120px;
+        margin: 4px auto 14px;
+        border: 4px solid var(--cyan);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        background: #0a0d1c;
+        box-shadow: 0 0 16px rgba(56, 242, 229, 0.25);
+        flex-shrink: 0;
+      }
+      .fillbox-liquid {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(180deg, var(--gold), #ff8a3b);
+        transition: height 0.15s ease-out;
+      }
+
+      .shakebox-wrap {
+        width: 140px;
+        height: 140px;
+        margin: 4px auto 12px;
+        position: relative;
+        flex-shrink: 0;
+      }
+      #shake-canvas {
+        width: 140px;
+        height: 140px;
+        border: 4px solid var(--cyan);
+        border-radius: 8px;
+        background: #0a0d1c;
+        box-shadow: 0 0 16px rgba(56, 242, 229, 0.25);
+        touch-action: none;
+      }
+      .mode-toggle {
+        text-align: center;
+        margin-top: 2px;
+        margin-bottom: 8px;
+      }
+      .mode-toggle a {
+        color: var(--text-dim);
+        font-size: 14px;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .light-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+      .light-dot.red {
+        background: var(--hp-red);
+        box-shadow: 0 0 12px var(--hp-red);
+      }
+      .light-dot.green {
+        background: var(--green);
+        box-shadow: 0 0 12px var(--green);
+      }
+      .light-label {
+        font-family: "Press Start 2P", monospace;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+      .light-label.red {
+        color: var(--hp-red);
+      }
+      .light-label.green {
+        color: var(--green);
+      }
+      .light-status {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .rlgl-track {
+        height: 14px;
+        background: #1a1e35;
+        border: 2px solid #2a3155;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .rlgl-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--cyan), var(--gold));
+        transition: width 0.15s linear;
+      }
+
+      .jumble-zone {
+        position: relative;
+        height: 170px;
+        margin-bottom: 6px;
+        flex-shrink: 0;
+      }
+
+      .huge-emoji {
+        font-size: 110px;
+        text-align: center;
+        line-height: 1;
+        cursor: pointer;
+        margin: 8px 0;
+        animation: pulse 1.4s infinite ease-in-out;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.08);
+        }
+      }
+
+      /* decorative bezel controls — brighter, actual console-plastic look */
+      .bezel-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 10px 4px;
+      }
+      .dpad {
+        width: 46px;
+        height: 46px;
+        position: relative;
+      }
+      .dpad::before,
+      .dpad::after {
+        content: "";
+        position: absolute;
+        background: linear-gradient(180deg, #4a4390, #2a2260);
+        border-radius: 3px;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.18),
+          0 2px 3px rgba(0, 0, 0, 0.4);
+      }
+      .dpad::before {
+        width: 46px;
+        height: 15px;
+        top: 15.5px;
+        left: 0;
+      }
+      .dpad::after {
+        width: 15px;
+        height: 46px;
+        top: 0;
+        left: 15.5px;
+      }
+      .ab-buttons {
+        display: flex;
+        gap: 10px;
+      }
+      .ab-buttons span {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow:
+          inset 0 2px 2px rgba(255, 255, 255, 0.25),
+          0 2px 4px rgba(0, 0, 0, 0.4);
+      }
+      .ab-buttons span:nth-child(1) {
+        background: linear-gradient(180deg, var(--magenta), #b81f6e);
+      }
+      .ab-buttons span:nth-child(2) {
+        background: linear-gradient(180deg, var(--cyan), #1fa89c);
+      }
+      .speaker {
+        display: flex;
+        gap: 3px;
+      }
+      .speaker span {
+        width: 3px;
+        height: 18px;
+        background: linear-gradient(180deg, #4a4390, #2a2260);
+        border-radius: 2px;
+      }
+
+      /* confetti */
+      .confetti-piece {
+        position: absolute;
+        top: -24px;
+        pointer-events: none;
+        z-index: 5;
+        animation: confetti-fall linear forwards;
+      }
+      @keyframes confetti-fall {
+        to {
+          transform: translateY(440px) rotate(360deg);
+          opacity: 0.15;
+        }
+      }
+      .bounce-in {
+        animation: bounce-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes bounce-in {
+        0% {
+          transform: scale(0) rotate(-20deg);
+          opacity: 0;
+        }
+        55% {
+          transform: scale(1.2) rotate(6deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+        }
+      }
+      .pop-text {
+        animation: pop-text 0.55s ease both;
+      }
+      @keyframes pop-text {
+        from {
+          transform: scale(0.6) translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1) translateY(0);
+          opacity: 1;
+        }
+      }
+      .sparkle-wobble {
+        animation: sparkle-wobble 2.2s ease-in-out infinite;
+        display: inline-block;
+      }
+      @keyframes sparkle-wobble {
+        0%,
+        100% {
+          transform: rotate(-4deg);
+        }
+        50% {
+          transform: rotate(4deg);
+        }
+      }
+      .loading-spin {
+        animation: loading-spin 1s linear infinite;
+        display: inline-block;
+      }
+      @keyframes loading-spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      footer.hint {
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 14px;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <div class="console">
+        <div class="screen">
+          <div id="hud"></div>
+          <div id="stage-root"></div>
+        </div>
+        <div class="bezel-controls" aria-hidden="true">
+          <div class="dpad"></div>
+          <div class="speaker">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="ab-buttons"><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* =================================================================
+   EDIT ZONE — customize names / word / final message here
+   ================================================================= */
+      const CONFIG = {
+        playerName: "Nephew",
+        bossName: "THE PRESENT GUARDIAN",
+        magicWord: "shechemaaaa",
+        finalMessage: "Okay okay. Happy birthday for real. ❤️",
+        realGiftHint: "Go check [WHERE THE REAL GIFT / NEWS IS] — go go go!",
+      };
+      /* ================================================================= */
+
+      const TOTAL_STAGES = 6;
+      let currentStage = 0;
+      const stageRoot = document.getElementById("stage-root");
+      const hud = document.getElementById("hud");
+
+      function bossHP(stageNum) {
+        return Math.max(0, 100 - Math.round((stageNum / TOTAL_STAGES) * 100));
+      }
+      function renderHUD(stageNum, visible) {
+        if (!visible) {
+          hud.style.display = "none";
+          return;
+        }
+        hud.style.display = "block";
+        const pct = bossHP(stageNum);
+        const lowClass = pct <= 25 ? "low" : "";
+        hud.innerHTML = `
+    <div class="hud-label">
+      <span class="name">${CONFIG.bossName}</span>
+      <span>STAGE ${stageNum}/${TOTAL_STAGES}</span>
+    </div>
+    <div class="hud-bar"><div class="hud-fill ${lowClass}" id="hud-fill" style="width:${pct}%"></div></div>
+  `;
+      }
+      function render(html) {
+        stageRoot.innerHTML = html;
+      }
+      function shakeCard() {
+        const el = document.querySelector(".screen");
+        el.classList.remove("flash-shake");
+        void el.offsetWidth;
+        el.classList.add("flash-shake");
+      }
+
+      /* ---------- Stage 0: Intro ---------- */
+      function stageIntro() {
+        render(`
+    <div class="grow">
+      <div class="emoji-big">🗺️</div>
+      <h1 class="title center">A wild birthday appears!</h1>
+      <p class="center"><strong>${CONFIG.playerName}</strong> has entered the Dungeon of Excessive Wrapping.</p>
+      <p class="dim center">Clear every trial to defeat the ${CONFIG.bossName} and claim the Birthday Treasure.</p>
+    </div>
+    <button onclick="goTo(1)">▶ START QUEST</button>
+  `);
+      }
+
+      /* ---------- Stage 1: Shake the box (with draw fallback) ---------- */
+      let shakeFill = 0;
+      let shakeDecayInterval = null;
+      let motionHandler = null;
+      let drawUpHandler = null;
+      let lastAccelMag = null;
+      let pumpDragging = false;
+      let pumpLastY = null;
+      let pumpTotal = 0;
+      let pumpMoveHandler = null;
+      let pumpUpHandler = null;
+      const PUMP_NEEDED = 1700;
+
+      function stageShakeBox() {
+        shakeFill = 0;
+        render(`
+    <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
+    <p class="center dim">Shake your phone to fill it up!</p>
+    <div class="shakebox-wrap"><canvas id="shake-canvas" width="140" height="140"></canvas></div>
+    <div class="hud-bar" style="margin-bottom:10px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
+    <button id="shake-start-btn" onclick="startShake()">📳 START SHAKING</button>
+    <div class="mode-toggle"><a onclick="switchToPump()">Can't shake right now? Pump it instead →</a></div>
+  `);
+        drawBoxFill(0);
+      }
+      function drawBoxFill(pct) {
+        const canvas = document.getElementById("shake-canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, 140, 140);
+        const h = (pct / 100) * 140;
+        const grad = ctx.createLinearGradient(0, 140 - h, 0, 140);
+        grad.addColorStop(0, "#ffd23f");
+        grad.addColorStop(1, "#ff8a3b");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 140 - h, 140, h);
+      }
+      async function startShake() {
+        const btn = document.getElementById("shake-start-btn");
+        if (btn) {
+          btn.textContent = "SHAKING...";
+          btn.disabled = true;
+        }
+        if (
+          typeof DeviceMotionEvent !== "undefined" &&
+          typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+          try {
+            const res = await DeviceMotionEvent.requestPermission();
+            if (res === "granted") {
+              beginMotionListening();
+            } else {
+              switchToDraw();
+            }
+          } catch (e) {
+            switchToDraw();
+          }
+        } else if (typeof DeviceMotionEvent !== "undefined") {
+          beginMotionListening();
+        } else {
+          switchToDraw();
+        }
+      }
+      function beginMotionListening() {
+        lastAccelMag = null;
+        motionHandler = function (e) {
+          const acc = e.accelerationIncludingGravity || e.acceleration;
+          if (!acc) return;
+          const mag = Math.sqrt(
+            (acc.x || 0) ** 2 + (acc.y || 0) ** 2 + (acc.z || 0) ** 2,
+          );
+          if (lastAccelMag !== null) {
+            const delta = Math.abs(mag - lastAccelMag);
+            if (delta > 3) {
+              shakeFill = Math.min(100, shakeFill + delta * 0.6);
+              updateShakeUI();
+            }
+          }
+          lastAccelMag = mag;
+        };
+        window.addEventListener("devicemotion", motionHandler);
+        clearInterval(shakeDecayInterval);
+        shakeDecayInterval = setInterval(() => {
+          shakeFill = Math.max(0, shakeFill - 0.8);
+          updateShakeUI();
+        }, 100);
+      }
+      function updateShakeUI() {
+        drawBoxFill(shakeFill);
+        const bar = document.getElementById("shake-fill-bar");
+        if (bar) bar.style.width = shakeFill + "%";
+        if (shakeFill >= 100) {
+          cleanupShakeStage();
+          goTo(2);
+        }
+      }
+      function switchToPump() {
+        cleanupShakeStage();
+        shakeFill = 0;
+        pumpTotal = 0;
+        render(`
+    <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
+    <p class="center dim">Drag the handle up and down to pump it full!</p>
+    <div class="fillbox-outline"><div class="fillbox-liquid" id="pump-liquid" style="height:0%"></div></div>
+    <div class="hud-bar" style="margin-bottom:14px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
+    <button class="secondary" id="pump-handle" style="cursor:grab;">⇅ HOLD &amp; DRAG ME</button>
+  `);
+        const handle = document.getElementById("pump-handle");
+        function getY(e) {
+          return e.touches ? e.touches[0].clientY : e.clientY;
+        }
+        const onDown = (e) => {
+          e.preventDefault();
+          pumpDragging = true;
+          pumpLastY = getY(e);
+          handle.style.cursor = "grabbing";
+        };
+        const onMove = (e) => {
+          if (!pumpDragging) return;
+          e.preventDefault();
+          const y = getY(e);
+          const delta = Math.abs(y - pumpLastY);
+          pumpTotal += delta;
+          pumpLastY = y;
+          const pct = Math.min(100, (pumpTotal / PUMP_NEEDED) * 100);
+          shakeFill = pct;
+          const liquid = document.getElementById("pump-liquid");
+          if (liquid) liquid.style.height = pct + "%";
+          const bar = document.getElementById("shake-fill-bar");
+          if (bar) bar.style.width = pct + "%";
+          if (pct >= 100) {
+            pumpDragging = false;
+            goTo(2);
+          }
+        };
+        const onUp = () => {
+          pumpDragging = false;
+          if (handle) handle.style.cursor = "grab";
+        };
+        handle.addEventListener("mousedown", onDown);
+        handle.addEventListener("touchstart", onDown, { passive: false });
+        window.addEventListener("mousemove", onMove, { passive: false });
+        window.addEventListener("touchmove", onMove, { passive: false });
+        window.addEventListener("mouseup", onUp);
+        window.addEventListener("touchend", onUp);
+        pumpMoveHandler = onMove;
+        pumpUpHandler = onUp;
+      }
+
+      function cleanupShakeStage() {
+        clearInterval(shakeDecayInterval);
+        if (motionHandler) {
+          window.removeEventListener("devicemotion", motionHandler);
+          motionHandler = null;
+        }
+        if (pumpMoveHandler) {
+          window.removeEventListener("mousemove", pumpMoveHandler);
+          window.removeEventListener("touchmove", pumpMoveHandler);
+          pumpMoveHandler = null;
+        }
+        if (pumpUpHandler) {
+          window.removeEventListener("mouseup", pumpUpHandler);
+          window.removeEventListener("touchend", pumpUpHandler);
+          pumpUpHandler = null;
+        }
+        pumpDragging = false;
+      }
+
+      /* ---------- Stage 2: type the magic word — input jumps AND loses focus after every character ---------- */
+      function stageTyping() {
+        render(`
+    <div class="stage-title">🔤 TRIAL II — SPEAK THE WORD</div>
+    <p>Type the sacred family word: <strong>${CONFIG.magicWord}</strong></p>
+    <div class="jumble-zone" id="jumble-zone">
+      <input type="text" id="jumble-input" placeholder="Tap, type one letter..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="error-msg" id="jumble-error"></div>
+    <button onclick="checkJumble()">SUBMIT</button>
+  `);
+        const inp = document.getElementById("jumble-input");
+        jumbleMove();
+        inp.addEventListener("input", jumbleMove);
+        inp.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") checkJumble();
+        });
+      }
+      function jumbleMove() {
+        const inp = document.getElementById("jumble-input");
+        const zone = document.getElementById("jumble-zone");
+        if (!inp || !zone) return;
+        const maxX = Math.max(0, zone.clientWidth - inp.offsetWidth);
+        const maxY = Math.max(0, zone.clientHeight - inp.offsetHeight);
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        const rot = Math.random() * 16 - 8;
+        inp.style.left = x + "px";
+        inp.style.top = y + "px";
+        inp.style.transform = `rotate(${rot}deg)`;
+        // lose focus after every character so he has to tap it again wherever it landed
+        setTimeout(() => {
+          inp.blur();
+        }, 0);
+      }
+      function checkJumble() {
+        const val = document
+          .getElementById("jumble-input")
+          .value.trim()
+          .toLowerCase();
+        const target = CONFIG.magicWord.trim().toLowerCase();
+        if (val === target) {
+          goTo(3);
+        } else {
+          shakeCard();
+          document.getElementById("jumble-error").textContent =
+            "Not quite the word. Try again.";
+        }
+      }
+
+      /* ---------- Stage 3: Red Light, Green Light — hold-to-move ---------- */
+      let rlglState = "red";
+      let rlglTimeout = null;
+      let rlglProgress = 0;
+      let rlglHolding = false;
+      let rlglFillInterval = null;
+      const RLGL_FILL_PER_TICK = 100 / 28; // ~2.8s of continuous green-hold to fill
+
+      function stageRedLightGreenLight() {
+        rlglProgress = 0;
+        rlglHolding = false;
+        render(`
+    <div class="stage-title">🚦 TRIAL III — RED LIGHT, GREEN LIGHT</div>
+    <p class="center dim">Hold the button to move. Let go before she turns around.</p>
+    <div class="light-status">
+      <span class="light-dot red" id="light-dot"></span><span class="light-label red" id="light-label">WATCHING</span>
+    </div>
+    <div class="emoji-big" id="rlgl-emoji">👀</div>
+    <div class="rlgl-track"><div class="rlgl-fill" id="rlgl-fill" style="width:0%"></div></div>
+    <button id="rlgl-btn">HOLD TO MOVE</button>
+  `);
+        rlglState = "red";
+        updateRlglUI();
+        scheduleRlglSwitch();
+        const btn = document.getElementById("rlgl-btn");
+        const start = (e) => {
+          e.preventDefault();
+          rlglHolding = true;
+          startRlglFillLoop();
+        };
+        const stop = () => {
+          rlglHolding = false;
+        };
+        btn.addEventListener("mousedown", start);
+        btn.addEventListener("touchstart", start, { passive: false });
+        btn.addEventListener("mouseup", stop);
+        btn.addEventListener("mouseleave", stop);
+        btn.addEventListener("touchend", stop);
+        btn.addEventListener("touchcancel", stop);
+      }
+      function startRlglFillLoop() {
+        clearInterval(rlglFillInterval);
+        rlglFillInterval = setInterval(() => {
+          if (!rlglHolding) {
+            clearInterval(rlglFillInterval);
+            return;
+          }
+          if (rlglState === "green") {
+            rlglProgress = Math.min(100, rlglProgress + RLGL_FILL_PER_TICK);
+            const bar = document.getElementById("rlgl-fill");
+            if (bar) bar.style.width = rlglProgress + "%";
+            if (rlglProgress >= 100) {
+              clearInterval(rlglFillInterval);
+              rlglHolding = false;
+              clearTimeout(rlglTimeout);
+              goTo(4);
+            }
+          }
+        }, 100);
+      }
+      function scheduleRlglSwitch() {
+        clearTimeout(rlglTimeout);
+        const duration =
+          rlglState === "red"
+            ? 1000 + Math.random() * 1200
+            : 900 + Math.random() * 1300;
+        rlglTimeout = setTimeout(() => {
+          const nextState = rlglState === "red" ? "green" : "red";
+          rlglState = nextState;
+          if (nextState === "red" && rlglHolding) {
+            rlglCaught();
+          } else {
+            updateRlglUI();
+          }
+          scheduleRlglSwitch();
+        }, duration);
+      }
+      function updateRlglUI() {
+        const dot = document.getElementById("light-dot");
+        const label = document.getElementById("light-label");
+        const emoji = document.getElementById("rlgl-emoji");
+        if (!dot) return;
+        if (rlglState === "red") {
+          dot.className = "light-dot red";
+          label.className = "light-label red";
+          label.textContent = "WATCHING";
+          emoji.textContent = "👀";
+        } else {
+          dot.className = "light-dot green";
+          label.className = "light-label green";
+          label.textContent = "GO!";
+          emoji.textContent = "🙈";
+        }
+      }
+      function rlglCaught() {
+        rlglHolding = false;
+        clearInterval(rlglFillInterval);
+        rlglProgress = 0;
+        const bar = document.getElementById("rlgl-fill");
+        if (bar) bar.style.width = "0%";
+        const emoji = document.getElementById("rlgl-emoji");
+        if (emoji) emoji.textContent = "😡";
+        const dot = document.getElementById("light-dot");
+        const label = document.getElementById("light-label");
+        if (dot) dot.className = "light-dot red";
+        if (label) {
+          label.className = "light-label red";
+          label.textContent = "CAUGHT!";
+        }
+        shakeCard();
+        setTimeout(updateRlglUI, 600);
+      }
+
+      /* ---------- Stage 4: fake buttons grid ---------- */
+      const FAKE_MESSAGES = [
+        "wrong",
+        "nope",
+        "still wrong",
+        "you again?",
+        "nice try",
+        "cold.",
+        "colder",
+        "not it",
+        "bruh",
+        "keep going",
+        "nah",
+        "try harder",
+        "denied",
+        "lol no",
+        "almost (not really)",
+        "0%",
+        "fake box",
+        "empty inside",
+        "just a sock",
+        "wrong again",
+      ];
+      function stageFakeButtons() {
+        const total = 20;
+        const correctIndex = Math.floor(Math.random() * total);
+        let html = `
+    <div class="stage-title">🎁 TRIAL IV — FIND THE REAL BOX</div>
+    <p>Only one of these boxes is real.</p>
+    <div class="fakegrid" id="fakegrid">`;
+        for (let i = 0; i < total; i++) {
+          html += `<button class="fakebtn" data-i="${i}" onclick="fakeClick(${i}, ${correctIndex})">📦</button>`;
+        }
+        html += `</div><div class="error-msg" id="fake-error"></div>`;
+        render(html);
+      }
+      function fakeClick(i, correctIndex) {
+        if (i === correctIndex) {
+          goTo(5);
+        } else {
+          const btn = document.querySelector(`.fakebtn[data-i="${i}"]`);
+          const msg =
+            FAKE_MESSAGES[Math.floor(Math.random() * FAKE_MESSAGES.length)];
+          if (btn) {
+            btn.textContent = msg;
+            btn.disabled = true;
+            setTimeout(() => {
+              if (btn) {
+                btn.textContent = "📦";
+                btn.disabled = false;
+              }
+            }, 900);
+          }
+          shakeCard();
+        }
+      }
+
+      /* ---------- Stage 5: fill the box (mash, drains slowly) ---------- */
+      let fillLevel = 0;
+      let fillInterval = null;
+      function stageFillBox() {
+        fillLevel = 0;
+        render(`
+    <div class="stage-title">📦 TRIAL V — FILL THE BOX</div>
+    <p class="center dim">Tap fast. It leaks.</p>
+    <div class="fillbox-outline"><div class="fillbox-liquid" id="fillbox-liquid" style="height:0%"></div></div>
+    <button onclick="mashClick()">MASH!</button>
+  `);
+        clearInterval(fillInterval);
+        fillInterval = setInterval(() => {
+          fillLevel = Math.max(0, fillLevel - 0.9);
+          const el = document.getElementById("fillbox-liquid");
+          if (el) el.style.height = fillLevel + "%";
+        }, 100);
+      }
+      function mashClick() {
+        fillLevel = Math.min(100, fillLevel + 4);
+        const el = document.getElementById("fillbox-liquid");
+        if (el) el.style.height = fillLevel + "%";
+        if (fillLevel >= 100) {
+          clearInterval(fillInterval);
+          goTo(6);
+        }
+      }
+
+      /* ---------- Stage 6: boss defeated -> loading -> middle finger -> genuine message + confetti ---------- */
+      function stageBossReveal() {
+        render(`
+    <div class="grow">
+      <div class="emoji-big">💥</div>
+      <h1 class="title final-glow center">The ${CONFIG.bossName} has fallen!</h1>
+      <p class="center dim">Open the final box.</p>
+    </div>
+    <button onclick="showGag()">🎁 OPEN FINAL BOX</button>
+  `);
+      }
+      const LOADING_MESSAGES = [
+        "Unwrapping...",
+        "Calculating chaos...",
+        "Almost there...",
+        "Preparing surprise...",
+        "Loading reward...",
+      ];
+      function showGag() {
+        renderHUD(0, false);
+        render(`
+    <div class="grow center">
+      <div class="emoji-big loading-spin">🎁</div>
+      <p class="dim" id="loading-text">${LOADING_MESSAGES[0]}</p>
+    </div>
+  `);
+        let i = 0;
+        const loadInterval = setInterval(() => {
+          i = (i + 1) % LOADING_MESSAGES.length;
+          const el = document.getElementById("loading-text");
+          if (el) el.textContent = LOADING_MESSAGES[i];
+        }, 450);
+        setTimeout(() => {
+          clearInterval(loadInterval);
+          render(`
+      <div class="grow center">
+        <div class="huge-emoji" onclick="showReal()">🖕</div>
+        <p class="dim">(tap it)</p>
+      </div>
+    `);
+        }, 2000);
+      }
+      function showReal() {
+        render(`
+    <div class="grow center">
+      <div class="emoji-big bounce-in" style="font-size:78px;">❤️</div>
+      <h1 class="title pop-text">${CONFIG.finalMessage}</h1>
+      <p class="pop-text">${CONFIG.realGiftHint}</p>
+      <p class="dim pop-text"><span class="sparkle-wobble">🎉</span> Happy birthday, ${CONFIG.playerName}. <span class="sparkle-wobble">🎂</span></p>
+    </div>
+    <button class="secondary" onclick="goTo(0)">🔁 PLAY AGAIN</button>
+  `);
+        launchConfetti();
+      }
+      function launchConfetti() {
+        const screen = document.querySelector(".screen");
+        const emojis = ["🎉", "🎊", "✨", "🎈", "⭐", "🎁"];
+        for (let i = 0; i < 30; i++) {
+          const piece = document.createElement("div");
+          piece.className = "confetti-piece";
+          piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          piece.style.left = Math.random() * 100 + "%";
+          piece.style.fontSize = 14 + Math.random() * 14 + "px";
+          piece.style.animationDuration = 1.8 + Math.random() * 1.6 + "s";
+          piece.style.animationDelay = Math.random() * 0.7 + "s";
+          screen.appendChild(piece);
+          setTimeout(() => piece.remove(), 4500);
+        }
+      }
+
+      function goTo(stage) {
+        currentStage = stage;
+        cleanupShakeStage();
+        clearInterval(fillInterval);
+        clearTimeout(rlglTimeout);
+        clearInterval(rlglFillInterval);
+        renderHUD(stage, stage > 0 && stage <= 6);
+        switch (stage) {
+          case 0:
+            renderHUD(0, false);
+            stageIntro();
+            break;
+          case 1:
+            stageShakeBox();
+            break;
+          case 2:
+            stageTyping();
+            break;
+          case 3:
+            stageRedLightGreenLight();
+            break;
+          case 4:
+            stageFakeButtons();
+            break;
+          case 5:
+            stageFillBox();
+            break;
+          case 6:
+            stageBossReveal();
+            break;
+        }
+      }
+
+      goTo(0);
+    </script>
+  </body>
+</html>
