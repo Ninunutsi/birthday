@@ -598,17 +598,14 @@
     </div>
 
     <script>
-      /* =================================================================
-   EDIT ZONE — customize names / word / final message here
-   ================================================================= */
       const CONFIG = {
-        playerName: "Nephew",
+        playerName: "Achiiiiiii",
         bossName: "THE PRESENT GUARDIAN",
-        magicWord: "shechemaaaa",
+        magicWord: "shechemaaaaaaaaaaaaa",
         finalMessage: "Okay okay. Happy birthday for real. ❤️",
-        realGiftHint: "Go check [WHERE THE REAL GIFT / NEWS IS] — go go go!",
+        realGiftHint:
+          "NEW LEVEL UNLOCKED 🎮 +1 age, +100 charisma, +999 kruasanoba. shen xar yvelaze kruasani kruasanebs shoris da yvelaze sayvareli shechema shechemebs shoris 🥹 Gilocav!",
       };
-      /* ================================================================= */
 
       const TOTAL_STAGES = 6;
       let currentStage = 0;
@@ -627,12 +624,11 @@
         const pct = bossHP(stageNum);
         const lowClass = pct <= 25 ? "low" : "";
         hud.innerHTML = `
-    <div class="hud-label">
-      <span class="name">${CONFIG.bossName}</span>
-      <span>STAGE ${stageNum}/${TOTAL_STAGES}</span>
-    </div>
-    <div class="hud-bar"><div class="hud-fill ${lowClass}" id="hud-fill" style="width:${pct}%"></div></div>
-  `;
+        <div class="hud-label">
+          <span class="name">${CONFIG.bossName}</span>
+          <span>STAGE ${stageNum}/${TOTAL_STAGES}</span>
+        </div>
+      `;
       }
       function render(html) {
         stageRoot.innerHTML = html;
@@ -647,14 +643,14 @@
       /* ---------- Stage 0: Intro ---------- */
       function stageIntro() {
         render(`
-    <div class="grow">
-      <div class="emoji-big">🗺️</div>
-      <h1 class="title center">A wild birthday appears!</h1>
-      <p class="center"><strong>${CONFIG.playerName}</strong> has entered the Dungeon of Excessive Wrapping.</p>
-      <p class="dim center">Clear every trial to defeat the ${CONFIG.bossName} and claim the Birthday Treasure.</p>
-    </div>
-    <button onclick="goTo(1)">▶ START QUEST</button>
-  `);
+        <div class="grow">
+          <div class="emoji-big">🗺️</div>
+          <h1 class="title center">A wild birthday appears!</h1>
+          <p class="center"><strong>${CONFIG.playerName}</strong> has entered the Dungeon of Excessive Wrapping.</p>
+          <p class="dim center">Clear every trial to defeat the ${CONFIG.bossName} and claim the Birthday Treasure.</p>
+        </div>
+        <button onclick="goTo(1)">▶ START QUEST</button>
+      `);
       }
 
       /* ---------- Stage 1: Shake the box (with draw fallback) ---------- */
@@ -673,13 +669,13 @@
       function stageShakeBox() {
         shakeFill = 0;
         render(`
-    <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
-    <p class="center dim">Shake your phone to fill it up!</p>
-    <div class="shakebox-wrap"><canvas id="shake-canvas" width="140" height="140"></canvas></div>
-    <div class="hud-bar" style="margin-bottom:10px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
-    <button id="shake-start-btn" onclick="startShake()">📳 START SHAKING</button>
-    <div class="mode-toggle"><a onclick="switchToPump()">Can't shake right now? Pump it instead →</a></div>
-  `);
+        <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
+        <p class="center dim">Shake your phone to fill it up!</p>
+        <div class="shakebox-wrap"><canvas id="shake-canvas" width="140" height="140"></canvas></div>
+        <div class="hud-bar" style="margin-bottom:10px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
+        <button id="shake-start-btn" onclick="startShake()">📳 START SHAKING</button>
+        <div class="mode-toggle"><a onclick="switchToPump()">Can't shake right now? Pump it instead →</a></div>
+      `);
         drawBoxFill(0);
       }
       function drawBoxFill(pct) {
@@ -731,7 +727,7 @@
           if (lastAccelMag !== null) {
             const delta = Math.abs(mag - lastAccelMag);
             if (delta > 3) {
-              shakeFill = Math.min(100, shakeFill + delta * 0.6);
+              shakeFill = Math.min(100, shakeFill + delta * 0.15);
               updateShakeUI();
             }
           }
@@ -758,12 +754,12 @@
         shakeFill = 0;
         pumpTotal = 0;
         render(`
-    <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
-    <p class="center dim">Drag the handle up and down to pump it full!</p>
-    <div class="fillbox-outline"><div class="fillbox-liquid" id="pump-liquid" style="height:0%"></div></div>
-    <div class="hud-bar" style="margin-bottom:14px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
-    <button class="secondary" id="pump-handle" style="cursor:grab;">⇅ HOLD &amp; DRAG ME</button>
-  `);
+        <div class="stage-title">📦 TRIAL I — FILL THE BOX</div>
+        <p class="center dim">Drag the handle up and down to pump it full!</p>
+        <div class="fillbox-outline"><div class="fillbox-liquid" id="pump-liquid" style="height:0%"></div></div>
+        <div class="hud-bar" style="margin-bottom:14px;"><div class="hud-fill" id="shake-fill-bar" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--gold));"></div></div>
+        <button class="secondary" id="pump-handle" style="cursor:grab;">⇅ HOLD &amp; DRAG ME</button>
+      `);
         const handle = document.getElementById("pump-handle");
         function getY(e) {
           return e.touches ? e.touches[0].clientY : e.clientY;
@@ -828,14 +824,14 @@
       /* ---------- Stage 2: type the magic word — input jumps AND loses focus after every character ---------- */
       function stageTyping() {
         render(`
-    <div class="stage-title">🔤 TRIAL II — SPEAK THE WORD</div>
-    <p>Type the sacred family word: <strong>${CONFIG.magicWord}</strong></p>
-    <div class="jumble-zone" id="jumble-zone">
-      <input type="text" id="jumble-input" placeholder="Tap, type one letter..." autocomplete="off" spellcheck="false">
-    </div>
-    <div class="error-msg" id="jumble-error"></div>
-    <button onclick="checkJumble()">SUBMIT</button>
-  `);
+        <div class="stage-title">🔤 TRIAL II — SPEAK THE WORD</div>
+        <p>Type the sacred family word: <strong>${CONFIG.magicWord}</strong></p>
+        <div class="jumble-zone" id="jumble-zone">
+          <input type="text" id="jumble-input" placeholder="Tap, type one letter..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="error-msg" id="jumble-error"></div>
+        <button onclick="checkJumble()">SUBMIT</button>
+      `);
         const inp = document.getElementById("jumble-input");
         jumbleMove();
         inp.addEventListener("input", jumbleMove);
@@ -887,15 +883,15 @@
         rlglProgress = 0;
         rlglHolding = false;
         render(`
-    <div class="stage-title">🚦 TRIAL III — RED LIGHT, GREEN LIGHT</div>
-    <p class="center dim">Hold the button to move. Let go before she turns around.</p>
-    <div class="light-status">
-      <span class="light-dot red" id="light-dot"></span><span class="light-label red" id="light-label">WATCHING</span>
-    </div>
-    <div class="emoji-big" id="rlgl-emoji">👀</div>
-    <div class="rlgl-track"><div class="rlgl-fill" id="rlgl-fill" style="width:0%"></div></div>
-    <button id="rlgl-btn">HOLD TO MOVE</button>
-  `);
+        <div class="stage-title">🚦 TRIAL III — RED LIGHT, GREEN LIGHT</div>
+        <p class="center dim">Hold the button to move. Let go before she turns around.</p>
+        <div class="light-status">
+          <span class="light-dot red" id="light-dot"></span><span class="light-label red" id="light-label">WATCHING</span>
+        </div>
+        <div class="emoji-big" id="rlgl-emoji">👀</div>
+        <div class="rlgl-track"><div class="rlgl-fill" id="rlgl-fill" style="width:0%"></div></div>
+        <button id="rlgl-btn">HOLD TO MOVE</button>
+      `);
         rlglState = "red";
         updateRlglUI();
         scheduleRlglSwitch();
@@ -1015,9 +1011,9 @@
         const total = 20;
         const correctIndex = Math.floor(Math.random() * total);
         let html = `
-    <div class="stage-title">🎁 TRIAL IV — FIND THE REAL BOX</div>
-    <p>Only one of these boxes is real.</p>
-    <div class="fakegrid" id="fakegrid">`;
+        <div class="stage-title">🎁 TRIAL IV — FIND THE REAL BOX</div>
+        <p>Only one of these boxes is real.</p>
+        <div class="fakegrid" id="fakegrid">`;
         for (let i = 0; i < total; i++) {
           html += `<button class="fakebtn" data-i="${i}" onclick="fakeClick(${i}, ${correctIndex})">📦</button>`;
         }
@@ -1051,11 +1047,11 @@
       function stageFillBox() {
         fillLevel = 0;
         render(`
-    <div class="stage-title">📦 TRIAL V — FILL THE BOX</div>
-    <p class="center dim">Tap fast. It leaks.</p>
-    <div class="fillbox-outline"><div class="fillbox-liquid" id="fillbox-liquid" style="height:0%"></div></div>
-    <button onclick="mashClick()">MASH!</button>
-  `);
+        <div class="stage-title">📦 TRIAL V — FILL THE BOX</div>
+        <p class="center dim">Tap fast. It leaks.</p>
+        <div class="fillbox-outline"><div class="fillbox-liquid" id="fillbox-liquid" style="height:0%"></div></div>
+        <button onclick="mashClick()">MASH!</button>
+      `);
         clearInterval(fillInterval);
         fillInterval = setInterval(() => {
           fillLevel = Math.max(0, fillLevel - 0.9);
@@ -1076,13 +1072,13 @@
       /* ---------- Stage 6: boss defeated -> loading -> middle finger -> genuine message + confetti ---------- */
       function stageBossReveal() {
         render(`
-    <div class="grow">
-      <div class="emoji-big">💥</div>
-      <h1 class="title final-glow center">The ${CONFIG.bossName} has fallen!</h1>
-      <p class="center dim">Open the final box.</p>
-    </div>
-    <button onclick="showGag()">🎁 OPEN FINAL BOX</button>
-  `);
+        <div class="grow">
+          <div class="emoji-big">💥</div>
+          <h1 class="title final-glow center">The ${CONFIG.bossName} has fallen!</h1>
+          <p class="center dim">Open the final box.</p>
+        </div>
+        <button onclick="showGag()">🎁 OPEN FINAL BOX</button>
+      `);
       }
       const LOADING_MESSAGES = [
         "Unwrapping...",
@@ -1094,11 +1090,11 @@
       function showGag() {
         renderHUD(0, false);
         render(`
-    <div class="grow center">
-      <div class="emoji-big loading-spin">🎁</div>
-      <p class="dim" id="loading-text">${LOADING_MESSAGES[0]}</p>
-    </div>
-  `);
+        <div class="grow center">
+          <div class="emoji-big loading-spin">🎁</div>
+          <p class="dim" id="loading-text">${LOADING_MESSAGES[0]}</p>
+        </div>
+      `);
         let i = 0;
         const loadInterval = setInterval(() => {
           i = (i + 1) % LOADING_MESSAGES.length;
@@ -1108,23 +1104,23 @@
         setTimeout(() => {
           clearInterval(loadInterval);
           render(`
-      <div class="grow center">
-        <div class="huge-emoji" onclick="showReal()">🖕</div>
-        <p class="dim">(tap it)</p>
-      </div>
-    `);
+          <div class="grow center">
+            <div class="huge-emoji" onclick="showReal()">🖕</div>
+            <p class="dim">(tap it)</p>
+          </div>
+        `);
         }, 2000);
       }
       function showReal() {
         render(`
-    <div class="grow center">
-      <div class="emoji-big bounce-in" style="font-size:78px;">❤️</div>
-      <h1 class="title pop-text">${CONFIG.finalMessage}</h1>
-      <p class="pop-text">${CONFIG.realGiftHint}</p>
-      <p class="dim pop-text"><span class="sparkle-wobble">🎉</span> Happy birthday, ${CONFIG.playerName}. <span class="sparkle-wobble">🎂</span></p>
-    </div>
-    <button class="secondary" onclick="goTo(0)">🔁 PLAY AGAIN</button>
-  `);
+        <div class="grow center">
+          <div class="emoji-big bounce-in" style="font-size:78px;">❤️</div>
+          <h1 class="title pop-text">${CONFIG.finalMessage}</h1>
+          <p class="pop-text">${CONFIG.realGiftHint}</p>
+          <p class="dim pop-text"><span class="sparkle-wobble">🎉</span> Happy birthday, ${CONFIG.playerName}. <span class="sparkle-wobble">🎂</span></p>
+        </div>
+        <button class="secondary" onclick="goTo(0)">🔁 PLAY AGAIN</button>
+      `);
         launchConfetti();
       }
       function launchConfetti() {
